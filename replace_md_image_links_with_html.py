@@ -1,22 +1,16 @@
 from pathlib import Path
 import re
 
-
 f_count, r_count = 0, 0
 starting_path = '[PUT STARTING PATH HERE]'
 
-# Here are some different patterns to try, comment/uncomment them as needed:
-# p = re.compile(r'(?<!!)\[([^\s\]]*)\]\(([^\s\)]*)\)')
-p = re.compile(r'(?<!!)\[(.+?)\]\((.+?)\)') # Agressive variation
+p = re.compile(r'\!\[([^\]]+)\]\(([^\)]+)\)')
 
 """
-the regex matches all Markdown links of the form following form:
-    [Example](http://www.example.com)
+the regex matches all Markdown image links of the form following form:
+    ![Example](http://www.example.com/image.jpg)
 and replaces them with new-tab HTML links, e.g.:
-    <a href="http://www.example.com" target="_blank">Example</a>
-NOTE: it does **NOT** match Markdown image links, e.g.
-    ![Example](imgs/example.jpg)
-which is intentional and expected behavior
+    '<img src="http://www.example.com/image.jpg" alt="Example" class="cn_image img-responsive">
 """
 
 def update_links(matchobj):
@@ -25,7 +19,7 @@ def update_links(matchobj):
     text = matchobj.group(1)
     url = matchobj.group(2)
     r_count += 1
-    return f'<a href="{url}" target="_blank">{text}</a>'
+    return f'<img src="{url}" alt="{text}" class="cn_image img-responsive">'
 
 
 def replace(directory):
